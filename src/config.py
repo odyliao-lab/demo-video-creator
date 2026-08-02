@@ -18,10 +18,19 @@ ANALYZER_MODEL = os.getenv("ANALYZER_MODEL", "gemini-2.5-flash")
 PLANNER_MODEL = os.getenv("PLANNER_MODEL", "claude-sonnet-5")
 PLANNER_ESCALATION_MODEL = os.getenv("PLANNER_ESCALATION_MODEL", "claude-opus-5")
 
+# ---- Phase 2：影片生成（Veo，付費、無免費層）----
+VIDEO_MODEL = os.getenv("VIDEO_MODEL", "veo-3.1-generate-preview")
+VIDEO_RESOLUTION = os.getenv("VIDEO_RESOLUTION", "720p")
+# 每秒單價（美元），用於生成前的成本預估；請自行到 Gemini API 定價頁確認後填入
+VIDEO_PRICE_PER_SECOND = float(os.getenv("VIDEO_PRICE_PER_SECOND", "0") or 0)
+# 單次批次最多可生成的鏡頭數（成本護欄）
+MAX_SHOTS_PER_BATCH = int(os.getenv("MAX_SHOTS_PER_BATCH", "5"))
+
 WORKSPACE_DIR = Path(os.getenv("WORKSPACE_DIR", PROJECT_ROOT / "workspace"))
 FRAMES_DIR = WORKSPACE_DIR / "frames"
 OUTPUT_DIR = WORKSPACE_DIR / "outputs"
+SHOTS_DIR = OUTPUT_DIR / "shots"
 DB_PATH = WORKSPACE_DIR / "phase1.db"
 
-for _d in (WORKSPACE_DIR, FRAMES_DIR, OUTPUT_DIR):
+for _d in (WORKSPACE_DIR, FRAMES_DIR, OUTPUT_DIR, SHOTS_DIR):
     _d.mkdir(parents=True, exist_ok=True)

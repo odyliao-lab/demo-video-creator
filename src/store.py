@@ -26,6 +26,20 @@ CREATE TABLE IF NOT EXISTS approvals (
     treatment_title TEXT,
     edited_json TEXT
 );
+CREATE TABLE IF NOT EXISTS generation_jobs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    created_at TEXT NOT NULL,
+    source_export TEXT,
+    treatment_title TEXT,
+    shot_id INTEGER,
+    model TEXT,
+    status TEXT,            -- succeeded / failed
+    video_path TEXT,
+    duration_seconds REAL,
+    elapsed_seconds REAL,
+    attempts INTEGER,
+    error TEXT
+);
 """
 
 
@@ -59,6 +73,21 @@ def save_approval(run_id: int, treatment_title: str, edited_json: str) -> None:
             "INSERT INTO approvals (run_id, approved_at, treatment_title, edited_json)"
             " VALUES (?,?,?,?)",
             (run_id, datetime.now(timezone.utc).isoformat(), treatment_title, edited_json),
+        )
+
+
+def save_generation_job(source_export: str, treatment_title: str, shot_id: int,
+                        model: str, status: str, video_path: str | None,
+                        duration_seconds: float, elapsed_seconds: float,
+                        attempts: int, error: str | None) -> None:
+    with _connect() as conn:
+        conn.execute(
+            "INSERT INTO generation_jobs (created_at, source_export, treatment_title,"
+            " shot_id, model, status, video_path, duration_seconds, elapsed_seconds,"
+            " attempts, error) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+            (datetime.now(timezone.utc).isoformat(), source_export, treatment_title,
+             shot_id, model, status, video_path, duration_seconds, elapsed_seconds,
+             attempts, error),
         )
 
 

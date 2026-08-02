@@ -69,7 +69,14 @@ workspace/                   （自動建立）影格、輸出、SQLite；已被
 - 每套企劃附相似度風險備註（僅風險提示，不代表法律安全）
 - 生成前一律人工審核批准，所有紀錄落入 SQLite
 
-## 下一步（Phase 2）
+## Phase 2：逐鏡生成 PoC（Veo）
 
-`VideoProvider` 抽象層已預留：接 Veo（Gemini API，付費）逐鏡生成 5 秒測試鏡頭，
-沿用 Phase 1 匯出的 `shots[].prompt` 與 negative constraints。
+Streamlit 側欄切到「Phase2 逐鏡生成」頁：
+
+1. 選擇 Phase 1 匯出的企劃 JSON → 選企劃 → 勾選鏡頭（預設前 3 鏡，單批上限 `MAX_SHOTS_PER_BATCH`）
+2. 頁面顯示預估生成秒數與費用（`.env` 填 `VIDEO_PRICE_PER_SECOND` 後才會估金額）
+3. 勾選付費確認 → 逐鏡生成，影片存到 `workspace/outputs/shots/`
+4. 每鏡的耗時、重試次數、失敗原因寫入 `generation_jobs` 表（對應交接文件第 12 章驗收指標）
+
+注意：**Veo 無免費層**，按生成秒數計價；`VIDEO_MODEL` 預設 `veo-3.1-generate-preview`，
+若報模型不存在，生成頁會列出你帳號實際可用的 Veo 模型 id 供修正。

@@ -3,7 +3,12 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from ..schemas import ReferenceAbstraction, SceneObservation, TreatmentSet
+from ..schemas import (
+    ReferenceAbstraction,
+    SceneObservation,
+    ShotPrompt,
+    TreatmentSet,
+)
 
 
 class AnalysisProvider(ABC):
@@ -23,3 +28,13 @@ class PlanningProvider(ABC):
     @abstractmethod
     def create_treatments(self, abstraction: ReferenceAbstraction,
                           user_request: str) -> tuple[TreatmentSet, str]: ...
+
+
+class VideoProvider(ABC):
+    """影片生成（Phase 2）：單鏡提示詞 -> 影片檔。付費 API，呼叫端需自行做成本護欄。"""
+
+    @abstractmethod
+    def generate_shot(self, shot: ShotPrompt, extra_negative: list[str],
+                      out_path: Path) -> Path:
+        """生成單一鏡頭並存到 out_path，回傳實際檔案路徑。失敗時 raise。"""
+        ...
