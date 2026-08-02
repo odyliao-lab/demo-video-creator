@@ -5,9 +5,10 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
-
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+# 固定讀專案根目錄的 .env，與啟動時的工作目錄無關
+load_dotenv(PROJECT_ROOT / ".env")
 
 # 影片理解（多模態、原生影片輸入）
 ANALYZER_MODEL = os.getenv("ANALYZER_MODEL", "gemini-2.5-flash")

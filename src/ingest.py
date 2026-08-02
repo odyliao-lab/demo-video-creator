@@ -1,7 +1,10 @@
 """本機影片前處理：ffprobe 技術資料、PySceneDetect 鏡頭切割、代表影格擷取。"""
 
 import json
+import os
+import shutil
 import subprocess
+from functools import lru_cache
 from pathlib import Path
 
 import cv2
@@ -10,10 +13,33 @@ from scenedetect import ContentDetector, detect
 from .schemas import SceneObservation, TechnicalMetadata
 
 
+@lru_cache(maxsize=1)
+def _ffprobe_path() -> str:
+    """尋找 ffprobe：PATH 優先，找不到時再掃 winget 安裝目錄。
+
+    winget 剛裝完 FFmpeg 時，已在執行中的行程（如 Streamlit 伺服器）
+    仍拿著舊 PATH，直接呼叫 "ffprobe" 會 WinError 2，所以這裡自行解析路徑。
+    """
+    found = shutil.which("ffprobe")
+    if found:
+        return found
+    local = os.environ.get("LOCALAPPDATA", "")
+    candidates = [
+        Path(local) / "Microsoft" / "WinGet" / "Links" / "ffprobe.exe",
+        *sorted(Path(local, "Microsoft", "WinGet", "Packages").glob(
+            "Gyan.FFmpeg*/**/bin/ffprobe.exe")),
+    ] if local else []
+    for c in candidates:
+        if c.exists():
+            return str(c)
+    raise FileNotFoundError(
+        "找不到 ffprobe。請安裝 FFmpeg（winget install Gyan.FFmpeg）後重新啟動應用。")
+
+
 def probe(video_path: str | Path) -> TechnicalMetadata:
     """用 ffprobe 讀取來源影片的技術資料。"""
     cmd = [
-        "ffprobe", "-v", "error", "-print_format", "json",
+        _ffprobe_path(), "-v", "error", "-print_format", "json",
         "-show_format", "-show_streams", str(video_path),
     ]
     out = subprocess.run(cmd, capture_output=True, text=True, check=True).stdout
