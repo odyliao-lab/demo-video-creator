@@ -78,5 +78,12 @@ Streamlit 側欄切到「Phase2 逐鏡生成」頁：
 3. 勾選付費確認 → 逐鏡生成，影片存到 `workspace/outputs/shots/`
 4. 每鏡的耗時、重試次數、失敗原因寫入 `generation_jobs` 表（對應交接文件第 12 章驗收指標）
 
-注意：**Veo 無免費層**，按生成秒數計價；`VIDEO_MODEL` 預設 `veo-3.1-generate-preview`，
-若報模型不存在，生成頁會列出你帳號實際可用的 Veo 模型 id 供修正。
+影片供應商由 `.env` 的 `VIDEO_PROVIDER` 決定：
+
+| 供應商 | 模型 | 每秒約略單價* | 需要的 key |
+|---|---|---|---|
+| `fal`（預設） | Seedance 2.0 Fast / 標準、Kling 3.0 / Pro | $0.022–0.05 | `FAL_KEY`（<https://fal.ai/dashboard/keys>） |
+| `veo` | Veo 3.1 / 3.1 Fast | $0.15–0.75 | `GEMINI_API_KEY`（需啟用計費） |
+
+*價格為第三方比價站 2026 年中資料，下單前請以官方定價頁為準。
+兩者皆無免費層，按生成秒數計價。

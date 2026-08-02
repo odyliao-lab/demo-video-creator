@@ -28,6 +28,9 @@ class GeminiVeoProvider(VideoProvider):
         self.model = model
         self.client = genai.Client()  # 讀 GEMINI_API_KEY
 
+    def clamp_duration(self, seconds: float) -> int:
+        return _clamp_duration(seconds)
+
     def generate_shot(self, shot: ShotPrompt, extra_negative: list[str],
                       out_path: Path) -> Path:
         negative = "; ".join(dict.fromkeys(shot.negative_constraints + extra_negative))

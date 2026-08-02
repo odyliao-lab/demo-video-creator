@@ -18,7 +18,12 @@ ANALYZER_MODEL = os.getenv("ANALYZER_MODEL", "gemini-2.5-flash")
 PLANNER_MODEL = os.getenv("PLANNER_MODEL", "claude-sonnet-5")
 PLANNER_ESCALATION_MODEL = os.getenv("PLANNER_ESCALATION_MODEL", "claude-opus-5")
 
-# ---- Phase 2：影片生成（Veo，付費、無免費層）----
+# ---- Phase 2：影片生成 ----
+# 供應商："fal"（Seedance/Kling，便宜 10-30 倍）或 "veo"（Gemini API，品質基準）
+VIDEO_PROVIDER = os.getenv("VIDEO_PROVIDER", "fal").lower()
+# fal.ai 上的模型 endpoint id
+FAL_MODEL = os.getenv("FAL_MODEL", "bytedance/seedance-2.0/fast/text-to-video")
+# Veo 模型 id（VIDEO_PROVIDER=veo 時使用）
 VIDEO_MODEL = os.getenv("VIDEO_MODEL", "veo-3.1-generate-preview")
 VIDEO_RESOLUTION = os.getenv("VIDEO_RESOLUTION", "720p")
 # 每秒單價（美元），用於生成前的成本預估；請自行到 Gemini API 定價頁確認後填入

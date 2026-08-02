@@ -33,8 +33,15 @@ class PlanningProvider(ABC):
 class VideoProvider(ABC):
     """影片生成（Phase 2）：單鏡提示詞 -> 影片檔。付費 API，呼叫端需自行做成本護欄。"""
 
+    #: 顯示用的模型名稱
+    model: str = ""
+
     @abstractmethod
     def generate_shot(self, shot: ShotPrompt, extra_negative: list[str],
                       out_path: Path) -> Path:
         """生成單一鏡頭並存到 out_path，回傳實際檔案路徑。失敗時 raise。"""
         ...
+
+    def clamp_duration(self, seconds: float) -> int:
+        """把企劃秒數收斂到此模型支援的長度。預設四捨五入。"""
+        return max(1, round(seconds))
