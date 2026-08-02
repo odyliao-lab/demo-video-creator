@@ -1,4 +1,8 @@
-# Demo Video Creator — Phase 1（分析與企劃）
+# Demo Video Creator
+
+> 開發歷程、決策理由與實測數據見 [DEVLOG.md](DEVLOG.md)。
+
+## Phase 1（分析與企劃）
 
 輸入參考影片 → 本機前處理（ffprobe + 鏡頭切割）→ Gemini 抽象化理解 →
 Claude 產生三套原創企劃與逐鏡提示詞 → 人工審核批准 → 匯出 JSON / Markdown。
